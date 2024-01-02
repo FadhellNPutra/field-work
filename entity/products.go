@@ -8,8 +8,6 @@ type Products struct {
 	Quantity    string    `json:"quantity"`
 	Price       int       `json:"price"`
 	Material    string    `json:"material"`
-	Size        string    `json:"size"`
-	Color       string    `json:"color"`
 	Description string    `json:"description"`
 	Photo       string    `json:"photo"`
 	CreatedAt   time.Time `json:"createdAt"`

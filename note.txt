@@ -36,10 +36,10 @@ Kami ingin menyampaikan kesan elegan, sekaligus kuno.
 - ada toko untuk belanja customer
 
 package yang dipakai :
-- golang
+- golang (v)
 - resty
-- jwt
-- gin
+- jwt (v)
+- gin (v)
 - raja ongkir
 - godotenv
 - testify (untuk unit testing)

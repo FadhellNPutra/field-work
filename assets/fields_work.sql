@@ -7,7 +7,7 @@ CREATE TYPE  role_type AS ENUM('customer', 'admin');
 CREATE TABLE users(
     id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(128) NOT NULL,
     address TEXT NOT NULL,
     role role_type DEFAULT 'customer';
@@ -23,8 +23,6 @@ CREATE TABLE products(
     quantity BIGINT NOT NULL,
     price BIGINT NOT NULL,
     material VARCHAR(50),
-    size size_type NOT NULL,
-    color VARCHAR(50) NOT NULL,
     description TEXT,
     photo VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -40,7 +38,11 @@ CREATE TABLE transaction(
     total_price BIGINT NOT NULL,
     total_quantity BIGINT NOT NULL,
     status status_type NOT NULL,
+    size size_type NOT NULL,
+    color VARCHAR(50) NOT NULL,
     customer_message TEXT,
+    FOREIGN KEY user_id REFERENCES users('id')
+    FOREIGN KEY products_id REFERENCES products('id')
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP 
 );
