@@ -1,0 +1,97 @@
+app jual product fashion
+
+deadline 7 - 10 hari
+start date :
+end date : 
+setelah tahun baru harus KELAR!!!(JANUARI)
+
+merek :
+Field Works
+
+yang dibutuhkan :
+1. branding (Landing Page) (html, css, js/jquery)
+2. about company (html, css, js/jquery)
+3. shop cart (golang)
+4. blog (golang, jquery/js, postgres)
+
+dalam landing page ada :
+- value company
+- CTA
+- desain minimalis
+- merek warna kuning
+
+deskripsi perusahaan:
+Kami adalah perusahaan fashion yang menjual pakaian olahraga yang timeless. 
+Barang kami dibuat dengan praktik ramah lingkungan dan dijual di toko favorit Anda. 
+Target audiens kami adalah pasangan. 
+Kami ingin menyampaikan kesan elegan, sekaligus kuno.
+
+--------------------------------------------------------------------------------------------
+- Design Pattern golang: model, repo, usecase, controller, view
+- RESTful API (pakai package resty)
+- payment gateway gunakan xendit
+- cek ongkir pakai raja ongkir
+- authorization pake jwt
+- ada dashboard untuk admin
+- ada toko untuk belanja customer
+
+package yang dipakai :
+- golang
+- resty
+- jwt
+- gin
+- raja ongkir
+- godotenv
+- testify (untuk unit testing)
+- jquery (js/FE) untuk ajax
+- boostrap (FE)
+- nb : untuk FE bisa buat pakai template atau buat sendiri
+
+fitur - fitur :
+
+1. login (customer, admin)
+2. get all product 
+4. get product by name (customer)
+5. transaction (customer)
+6. invoice (customer)
+7. cek ongkir (raja ongkir)(resty)
+8. payment gateway (xendit)(resty)
+
+database schema:
+extension : uuid, pgcrypto
+1. users
+  - id 
+  - name
+  - username
+  - password
+  - role
+  - created_at
+  - updated_at
+
+2. product (admin)(untuk nambah product)
+  - id
+  - product_name
+  - quantity
+  - price/pcs
+  - material
+  - size
+  - color
+  - photo
+  - created_at
+  - updated_at
+
+3. transaksi(user)(untuk belanja)
+  - id
+  - user_id
+  - product_id
+  - total_price
+  - total_quantity
+  - status (admin yang ubah)
+  - created_at
+  - updated_at
+
+4. blog(admin)(khusus untuk FE/landing page)
+  - id
+  - title
+  - article
+  - release_date
