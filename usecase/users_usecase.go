@@ -14,7 +14,7 @@ type UsersUseCase interface {
 	FindUsersForLogin(username, password string) (entity.Users, error)
 	RegisterNewUsers(payload entity.Users) (entity.Users, error)
 	UpdateUsers(payload entity.Users) (entity.Users, error)
-	DeleteUsers(id entity.Users) error
+	DeleteUsers(id string) error
 	ListAll(page, size int) ([]entity.Users, model.Paging, error)
 }
 
@@ -23,8 +23,8 @@ type usersUseCase struct {
 }
 
 // DeleteUsers implements UsersUseCase.
-func (u *usersUseCase) DeleteUsers(id entity.Users) error {
-	if id.ID == "" {
+func (u *usersUseCase) DeleteUsers(id string) error {
+	if id == "" {
 		return errors.New("gagal menghapus data")
 	}
 	return u.repo.DeleteUser(id)

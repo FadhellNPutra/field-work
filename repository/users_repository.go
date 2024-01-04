@@ -17,7 +17,7 @@ type UsersRepository interface {
 	GetUsersByUsernameForLogin(username, password string) (entity.Users, error)
 	CreateUser(payload entity.Users) (entity.Users, error)
 	UpdateUser(payload entity.Users) (entity.Users, error)
-	DeleteUser(id entity.Users) (error)
+	DeleteUser(id string) (error)
 }
 
 type usersRepository struct {
@@ -51,7 +51,7 @@ func (u *usersRepository) CreateUser(payload entity.Users) (entity.Users, error)
 }
 
 // DeleteUser implements UsersRepository.
-func (u *usersRepository) DeleteUser(id entity.Users) (error) {
+func (u *usersRepository) DeleteUser(id string) (error) {
 	_, err := u.db.Exec(config.DeleteUser, id)
 	if err != nil {
 		log.Println("usersRepository.DeleteUser.Exec: ", err.Error())
@@ -106,10 +106,7 @@ func (u *usersRepository) GetUsersByUsernameForLogin(username string, password s
 		&users.Name,
 		&users.Username,
 		&users.Password,
-		&users.Address,
-		&users.Role,
-		&users.CreatedAt,
-		&users.UpdatedAt)
+		&users.Role)
 	if err != nil {
 		log.Println("usersRepository.GetUsersByUsername.QueryRow: ", err.Error())
 		return entity.Users{}, err

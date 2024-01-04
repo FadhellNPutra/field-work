@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS field_work_db;
-CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';
-CREATE EXTENSION IF NOT EXISTS 'pgcrypto';
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TYPE  role_type AS ENUM('customer', 'admin');
 
@@ -12,7 +12,7 @@ CREATE TABLE users(
     address TEXT NOT NULL,
     role role_type DEFAULT 'customer';
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP 
+    updated_at TIMESTAMP,
 );
 
 CREATE TYPE  size_type AS ENUM('S', 'M', 'L', 'XL');

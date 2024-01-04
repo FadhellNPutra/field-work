@@ -19,7 +19,7 @@ func SendCreateResponse(c *gin.Context, data interface{}, message string) {
 func SendDeleteResponse(c *gin.Context, data interface{}, message string) {
 	c.JSON(http.StatusAccepted, &model.SingleResponse{
 		Status: model.Status{
-			Code:    http.StatusCreated,
+			Code:    http.StatusAccepted,
 			Message: message,
 		},
 		Data: data,

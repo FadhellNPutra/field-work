@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "field_work/delivery"
 
 func main() {
-	fmt.Println("Field Work company")
+	delivery.NewServer().Run()
 }

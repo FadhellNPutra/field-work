@@ -49,7 +49,7 @@ package yang dipakai :
 
 fitur - fitur :
 
-1. login (customer, admin)
+1. login (customer, admin)(v)
 2. get all product 
 4. get product by name (customer)
 5. transaction (customer)
