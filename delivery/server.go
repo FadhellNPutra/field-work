@@ -46,12 +46,14 @@ func NewServer() *Server {
 		panic(err.Error())
 	}
 
+	// service
+	jwtService := service.NewJwtService(cfg.TokenConfig)
+
 	// Repo
 	usersRepo := repository.NewUsersRepository(db)
 
 	// Usecase
 	usersUC := usecase.NewUsersUseCase(usersRepo)
-	jwtService := service.NewJwtService(cfg.TokenConfig)
 	authUC := usecase.NewAuthUseCase(usersUC, jwtService)
 
 	engine := gin.Default()

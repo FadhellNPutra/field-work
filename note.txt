@@ -93,5 +93,6 @@ extension : uuid, pgcrypto
 4. blog(admin)(khusus untuk FE/landing page)
   - id
   - title
+  - subtitle
   - article
   - release_date
