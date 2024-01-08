@@ -26,14 +26,17 @@ func (a *AuthController) loginHandler(ctx *gin.Context) {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
-	common.SendCreateResponse(ctx, rsv, "Ok")
+	common.SendCreatedResponse(ctx, rsv, "", "Ok")
 }
 
 func (a *AuthController) Route() {
-	a.rg.POST(config.AuthLogin, a.loginHandler)
+	admin := a.rg.Group(config.AdminGroup)
+	admin.POST(config.Login, a.loginHandler)
+
+	customers := a.rg.Group(config.CustomerGroup)
+	customers.POST(config.Login, a.loginHandler)
 }
 
 func NewAuthController(authUC usecase.AuthUseCase, rg *gin.RouterGroup) *AuthController {
 	return &AuthController{authUC: authUC, rg: rg}
 }
-

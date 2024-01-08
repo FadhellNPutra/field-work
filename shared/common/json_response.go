@@ -7,20 +7,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SendCreateResponse(c *gin.Context, data interface{}, message string) {
+func SendCreatedResponse(c *gin.Context, data interface{}, createdAt string, message string) {
 	c.JSON(http.StatusCreated, &model.SingleResponse{
-		Status: model.Status{
-			Code:    http.StatusCreated,
-			Message: message,
+		Meta: model.Meta{
+			Status:    "Success",
+			Code:      http.StatusCreated,
+			Message:   message,
+			CreatedAt: createdAt,
 		},
 		Data: data,
 	})
 }
-func SendDeleteResponse(c *gin.Context, data interface{}, message string) {
-	c.JSON(http.StatusAccepted, &model.SingleResponse{
-		Status: model.Status{
-			Code:    http.StatusAccepted,
-			Message: message,
+
+func SendUpdatedResponse(c *gin.Context, data interface{}, updatedAt string, message string) {
+	c.JSON(http.StatusCreated, &model.SingleResponse{
+		Meta: model.Meta{
+			Status:    "Success",
+			Code:      http.StatusCreated,
+			Message:   message,
+			UpdatedAt: updatedAt,
 		},
 		Data: data,
 	})
@@ -28,7 +33,8 @@ func SendDeleteResponse(c *gin.Context, data interface{}, message string) {
 
 func SendSingleResponse(c *gin.Context, data interface{}, message string) {
 	c.JSON(http.StatusOK, &model.SingleResponse{
-		Status: model.Status{
+		Meta: model.Meta{
+			Status:  "Success",
 			Code:    http.StatusOK,
 			Message: message,
 		},
@@ -36,13 +42,31 @@ func SendSingleResponse(c *gin.Context, data interface{}, message string) {
 	})
 }
 
-func SendErrorResponse(c *gin.Context, code int, message string) {
-	c.AbortWithStatusJSON(code, &model.Status{
-		Code:    code,
-		Message: message,
+func SendPagedResponse(c *gin.Context, data []interface{}, paging model.Paging, message string) {
+	c.JSON(http.StatusOK, &model.PagedResponse{
+		Meta: model.Meta{
+			Status:  "Success",
+			Code:    http.StatusOK,
+			Message: message,
+		},
+		Data:   data,
+		Paging: paging,
 	})
 }
 
-func SendNoContentResponse(c *gin.Context) {
-	c.JSON(http.StatusNoContent, nil)
+func SendDeletedResponse(c *gin.Context, message string) {
+	c.JSON(http.StatusOK, &model.Meta{
+		Status:  "Success",
+		Code:    http.StatusOK,
+		Message: message,
+	},
+	)
+}
+
+func SendErrorResponse(c *gin.Context, code int, message string) {
+	c.JSON(code, &model.Meta{
+		Status:  "Error",
+		Code:    code,
+		Message: message,
+	})
 }

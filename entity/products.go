@@ -1,15 +1,13 @@
 package entity
 
-import "time"
-
 type Products struct {
-	ID          string    `json:"id"`
-	ProductName string    `json:"productName"`
-	Quantity    string    `json:"quantity"`
-	Price       int       `json:"price"`
-	Material    string    `json:"material"`
-	Description string    `json:"description"`
-	Photo       string    `json:"photo"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID          string `json:"id"`
+	ProductName string `json:"productName,omitempty"`
+	Quantity    string `json:"quantity,omitempty"`
+	Price       int    `json:"price,omitempty"`
+	Material    string `json:"material,omitempty"`
+	Description string `json:"description,omitempty"`
+	Photo       string `json:"photo,omitempty"`
+	CreatedAt   string `json:"createdAt,omitempty"`
+	UpdatedAt   string `json:"updatedAt,omitempty"`
 }

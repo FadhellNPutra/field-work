@@ -1,17 +1,15 @@
 package entity
 
-import "time"
-
 type Transaction struct {
-	ID              string    `json:"id"`
-	UserId          string    `json:"userId"`
-	ProductId       string    `json:"productId"`
-	TotalPrice      int       `json:"totalPrice"`
-	TotalQuantity   int       `json:"totalQuantity"`
-	Size            string    `json:"size"`
-	Color           string    `json:"color"`
-	Status          string    `json:"status"`
-	CustomerMessage string    `json:"customerMessage"`
-	CreatedAt       time.Time `json:"createdAt"`
-	UpdatedAt       time.Time `json:"updatedAt"`
+	ID              string `json:"id"`
+	UserId          string `json:"userId,omitempty"`
+	ProductId       string `json:"productId,omitempty"`
+	TotalPrice      int    `json:"totalPrice,omitempty"`
+	TotalQuantity   int    `json:"totalQuantity,omitempty"`
+	Size            string `json:"size,omitempty"`
+	Color           string `json:"color,omitempty"`
+	Status          string `json:"status,omitempty"`
+	CustomerMessage string `json:"customerMessage,omitempty"`
+	CreatedAt       string `json:"createdAt,omitempty"`
+	UpdatedAt       string `json:"updatedAt,omitempty"`
 }
