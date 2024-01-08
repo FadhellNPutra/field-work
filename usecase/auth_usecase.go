@@ -4,10 +4,11 @@ import (
 	"field_work/entity"
 	"field_work/entity/dto"
 	"field_work/shared/service"
+	"strings"
 )
 
 type AuthUseCase interface {
-	Register(payload entity.Users) (entity.Users, error)
+	Register(payload entity.Users, role string) (entity.Users, error)
 	Login(payload dto.AuthRequestDto) (dto.AuthResponseDto, error)
 }
 
@@ -16,7 +17,13 @@ type authUseCase struct {
 	jwtService service.JwtService
 }
 
-func (a *authUseCase) Register(payload entity.Users) (entity.Users, error) {
+func (a *authUseCase) Register(payload entity.Users, role string) (entity.Users, error) {
+	if strings.Contains(role, "admin") {
+		payload.Role = "Admin"
+	} else {
+		payload.Role = "Customer"
+	}
+
 	user, err := a.userUC.RegisterNewUsers(payload)
 	return user, err
 }

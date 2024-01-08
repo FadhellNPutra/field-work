@@ -7,18 +7,14 @@ const (
 	CustomerGroup = "/customers"
 
 	// Users
-	// UserList       = "/user"
-	// UserById       = "/user/:id"
-	// UserByUsername = "/user/username/:user"
-	// UserCreate     = "/user"
-	// UserUpdate     = "/user"
-	// UserDelete     = "/user/:id"
 	Users     = "users"
 	UsersByID = "users/:id"
 
 	// Register
-	Register = "/register"
+	AdminRegister    = "auth/register/admin"
+	CustomerRegister = "auth/register"
 
 	// Login
-	Login = "/login"
+	CustomerLogin = "auth/login"
+	AdminLogin    = "auth/login/admin"
 )
