@@ -1,0 +1,18 @@
+html{
+    padding: 0;
+    margin: 0;
+}
+
+.col > div > .color-button{
+    background-color: #98CA32;
+
+}
+#nav{
+    box-shadow: 0px 2px 5px 0px rgba(196,185,185,0.75);
+    -webkit-box-shadow: 0px 12px 5px 0px rgba(196,185,185,0.75);
+    -moz-box-shadow: 0px 12px 5px 0px rgba(196,185,185,0.75);
+}
+#hero{
+    background: rgb(131,58,180);
+    background: linear-gradient(351deg, rgba(131,58,180,1) 0%, rgba(191,250,58,0.8267682072829132) 0%, rgba(252,244,69,0.8463760504201681) 79%);
+}
