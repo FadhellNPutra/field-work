@@ -2,6 +2,7 @@ package repository
 
 import (
   "database/sql"
+  "fmt"
   "log"
   "math"
   
@@ -14,6 +15,7 @@ type ProductsRepository interface {
   Insert(payload entity.Products) (entity.Products, error)
   FindAll(page, size int) ([]entity.Products, model.Paging, error)
   FindByID(id string) (entity.Products, error)
+  FindByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error)
 }
 
 type productsRepository struct {
@@ -100,6 +102,51 @@ func (r *productsRepository) FindByID(id string) (entity.Products, error) {
   }
   
   return product, nil
+}
+
+func (r *productsRepository) FindByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error) {
+  var products []entity.Products
+  offset := (page - 1) * size
+
+  rows, err := r.db.Query(config.SelectProductsByProductName, fmt.Sprintf("%%%s%%", productName), size, offset)
+  if err != nil {
+    log.Println("productsRepository: FindByProductName.Query Err :", err)
+    return nil, model.Paging{}, err
+  }
+
+  for rows.Next() {
+    var product entity.Products
+    if err := rows.Scan(
+      &product.ID,
+      &product.ProductName,
+      &product.Quantity,
+      &product.Price,
+      &product.Material,
+      &product.Description,
+      &product.CreatedAt,
+      &product.UpdatedAt,
+    ); err != nil {
+      log.Println("productsRepository: FindByProductName.rows.Scan Err :", err)
+      return nil, model.Paging{}, err
+    }
+
+    products = append(products, product)
+  }
+
+  totalRows := 0
+  if err := r.db.QueryRow("SELECT COUNT(*) totalRows FROM products WHERE product_name ILIKE $1", fmt.Sprintf("%%%s%%", productName)).Scan(&totalRows); err != nil {
+    log.Println("productsRepository: FindByProductName.QueryRow.totalRows Err :", err)
+    return nil, model.Paging{}, err
+  }
+  
+  paging := model.Paging{
+    Page: page,
+    RowsPerPage: size,
+    TotalRows: totalRows,
+    TotalPages: int(math.Ceil(float64(totalRows) / float64(size))),
+  }
+  
+  return products, paging, nil
 }
 
 func NewProductsRepository(db *sql.DB) ProductsRepository {

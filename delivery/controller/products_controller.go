@@ -8,6 +8,7 @@ import (
   "field_work/entity"
   "field_work/helpers"
   "field_work/shared/common"
+  "field_work/shared/model"
   "field_work/usecase"
   "fmt"
   "net/http"
@@ -40,21 +41,39 @@ func (c *productsController) insertHandler(ctx *gin.Context) {
 }
 
 func (c *productsController) listHandler(ctx *gin.Context) {
+  productName := ctx.Query("product_name")
   page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
   size, _ := strconv.Atoi(ctx.DefaultQuery("size", "5"))
-  
-  products, paging, err := c.productsUseCase.ListProducts(page, size)
+  var products []entity.Products
+  var paging model.Paging
+  var err error
+
+  if productName != "" {
+    products, paging, err = c.productsUseCase.GetProductsByProductName(productName, page, size)
+  } else {
+    products, paging, err = c.productsUseCase.ListProducts(page, size)
+  }
+
   if err != nil {
-    common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    if errors.Is(err, sql.ErrNoRows) {
+      common.SendErrorResponse(ctx, http.StatusNotFound, "Products not found")
+    } else {
+      common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    }
     return
   }
   
+  if products == nil {
+    common.SendErrorResponse(ctx, http.StatusNotFound, "Products not found")
+    return
+  }
+
   var response []any
   for _, value := range products {
-    value.TimeFormat("CreatedAt")
+    value.TimeFormat("CreatedAt", "UpdatedAt")
     response = append(response, value)
   }
-  
+
   common.SendPagedResponse(ctx, response, paging, "List Products")
 }
 
