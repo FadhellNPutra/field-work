@@ -17,6 +17,7 @@ import (
 type Server struct {
 	usersUC    usecase.UsersUseCase
 	authUC     usecase.AuthUseCase
+	productsUC     usecase.ProductsUseCase
 	jwtService service.JwtService
 	engine     *gin.Engine
 	host       string
@@ -28,6 +29,7 @@ func (s *Server) initRoute() {
 	authMiddleware := middleware.NewAuthMiddleware(s.jwtService)
 	controller.NewAuthController(s.authUC, rg).Route()
 	controller.NewUsersController(s.usersUC, rg, authMiddleware).Route()
+	controller.NewProductsController(s.productsUC, rg, authMiddleware).Route()
 }
 
 func (s *Server) Run() {
@@ -39,7 +41,6 @@ func (s *Server) Run() {
 
 func NewServer() *Server {
 	cfg, _ := config.NewConfig()
-
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name)
 	db, err := sql.Open(cfg.Driver, dsn)
 	if err != nil {
@@ -51,10 +52,12 @@ func NewServer() *Server {
 
 	// Repo
 	usersRepo := repository.NewUsersRepository(db)
-
+	productsRepo := repository.NewProductsRepository(db)
+  
 	// Usecase
 	usersUC := usecase.NewUsersUseCase(usersRepo)
 	authUC := usecase.NewAuthUseCase(usersUC, jwtService)
+	productsUC := usecase.NewProductsUseCase(productsRepo)
 
 	engine := gin.Default()
 	host := fmt.Sprintf(":%s", cfg.ApiPort)
@@ -62,6 +65,7 @@ func NewServer() *Server {
 	return &Server{
 		usersUC:    usersUC,
 		authUC:     authUC,
+		productsUC:     productsUC,
 		jwtService: jwtService,
 		engine:     engine,
 		host:       host,

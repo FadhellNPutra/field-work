@@ -17,4 +17,7 @@ const (
 	// Login
 	CustomerLogin = "auth/login"
 	AdminLogin    = "auth/login/admin"
+	
+	// Products
+	Products = "products"
 )

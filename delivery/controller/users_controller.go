@@ -7,6 +7,7 @@ import (
 	"field_work/delivery/middleware"
 	"field_work/entity"
 	"field_work/entity/dto"
+	"field_work/helpers"
 	"field_work/shared/common"
 	"field_work/usecase"
 	"log"
@@ -45,7 +46,7 @@ func (u *UserController) createHandler(ctx *gin.Context) {
 		return
 	}
 
-	common.SendCreatedResponse(ctx, userDto, createdAt.Format("Monday 02, January 2006 15:04:05"), "Create user successfully")
+	common.SendCreatedResponse(ctx, userDto, createdAt.In(helpers.Location()).Format(time.RFC850), "Create user successfully")
 }
 
 func (u *UserController) getByIdHandler(ctx *gin.Context) {
@@ -109,7 +110,7 @@ func (u *UserController) putHandler(ctx *gin.Context) {
 		return
 	}
 
-	common.SendUpdatedResponse(ctx, userDto, updatedAt.Format("Monday 02, January 2006 15:04:05"), "Update user successfully")
+	common.SendUpdatedResponse(ctx, userDto, updatedAt.In(helpers.Location()).Format(time.RFC850), "Update user successfully")
 }
 
 func (u *UserController) deleteHandler(ctx *gin.Context) {

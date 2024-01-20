@@ -32,7 +32,7 @@ func (j *jwtService) CreateToken(user entity.Users) (dto.AuthResponseDto, error)
 		Role: user.Role,
 	}
 	token := jwt.NewWithClaims(j.cfg.JwtSigningMethod, claims)
-	ss, err := token.SignedString(j.cfg.JwtSignatureKy)
+	ss, err := token.SignedString(j.cfg.JwtSignatureKey)
 	if err != nil{
 		return dto.AuthResponseDto{}, fmt.Errorf("oops, failed to create token")
 	}
@@ -42,7 +42,7 @@ func (j *jwtService) CreateToken(user entity.Users) (dto.AuthResponseDto, error)
 // ParseToken implements JwtService.
 func (j *jwtService) ParseToken(tokenHeader string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenHeader, func(token *jwt.Token) (interface{}, error) {
-		return j.cfg.JwtSignatureKy, nil
+		return j.cfg.JwtSignatureKey, nil
 	})
 
 	if err != nil {

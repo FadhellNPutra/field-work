@@ -1,6 +1,10 @@
 package usecase
 
 import (
+  "database/sql"
+  "errors"
+  "fmt"
+  
 	"field_work/entity"
 	"field_work/entity/dto"
 	"field_work/shared/service"
@@ -9,7 +13,7 @@ import (
 
 type AuthUseCase interface {
 	Register(payload entity.Users, role string) (entity.Users, error)
-	Login(payload dto.AuthRequestDto) (dto.AuthResponseDto, error)
+	Login(payload dto.AuthRequestDto, endpoint string) (dto.AuthResponseDto, error)
 }
 
 type authUseCase struct {
@@ -28,11 +32,26 @@ func (a *authUseCase) Register(payload entity.Users, role string) (entity.Users,
 	return user, err
 }
 
-func (a *authUseCase) Login(payload dto.AuthRequestDto) (dto.AuthResponseDto, error) {
+func (a *authUseCase) Login(payload dto.AuthRequestDto, endpoint string) (dto.AuthResponseDto, error) {
 	user, err := a.userUC.FindUsersForLogin(payload.User, payload.Password)
 	if err != nil {
-		return dto.AuthResponseDto{}, err
+	  if errors.Is(err, sql.ErrNoRows) {
+		  return dto.AuthResponseDto{}, fmt.Errorf("User with username '%s' not found", payload.User)
+	  } else {
+		  return dto.AuthResponseDto{}, err
+	  }
 	}
+	
+	if strings.HasSuffix(endpoint, "admin") {
+	  if user.Role != "Admin" {
+		  return dto.AuthResponseDto{}, fmt.Errorf("User with username '%s' is not an Admin", payload.User)
+	  }
+	} else {
+	  if user.Role != "Customer" {
+		  return dto.AuthResponseDto{}, fmt.Errorf("User with username '%s' is not a Customer", payload.User)
+	  }
+	}
+	
 	token, err := a.jwtService.CreateToken(user)
 	if err != nil {
 		return dto.AuthResponseDto{}, err
@@ -42,5 +61,4 @@ func (a *authUseCase) Login(payload dto.AuthRequestDto) (dto.AuthResponseDto, er
 
 func NewAuthUseCase(userUC UsersUseCase, jwtService service.JwtService) AuthUseCase {
 	return &authUseCase{userUC: userUC, jwtService: jwtService}
-
 }

@@ -26,7 +26,7 @@ type ApiConfig struct {
 
 type TokenConfig struct {
 	IssuerName       string `json:"IssuerName"`
-	JwtSignatureKy   []byte `json:"JwtSignatureKy"`
+	JwtSignatureKey   []byte `json:"JwtSignatureKey"`
 	JwtSigningMethod *jwt.SigningMethodHMAC
 	JwtExpiresTime   time.Duration
 }
@@ -56,12 +56,12 @@ func (c *Config) ConfigConfiguration() error {
 	tokenExpire, _ := strconv.Atoi(os.Getenv("TOKEN_EXPIRE"))
 	c.TokenConfig = TokenConfig{
 		IssuerName:       os.Getenv("TOKEN_ISSUE"),
-		JwtSignatureKy:   []byte(os.Getenv("TOKEN_SECRET")),
+		JwtSignatureKey:   []byte(os.Getenv("TOKEN_SECRET")),
 		JwtSigningMethod: jwt.SigningMethodHS256,
 		JwtExpiresTime:   time.Duration(tokenExpire) * time.Minute,
 	}
 
-	if c.Host == "" || c.Port == "" || c.User == "" || c.Name == "" || c.Driver == "" || c.ApiPort == "" || c.IssuerName == "" || c.JwtExpiresTime < 0 || len(c.JwtSignatureKy) == 0 {
+	if c.Host == "" || c.Port == "" || c.User == "" || c.Name == "" || c.Driver == "" || c.ApiPort == "" || c.IssuerName == "" || c.JwtExpiresTime < 0 || len(c.JwtSignatureKey) == 0 {
 		return fmt.Errorf("missing required environment")
 	}
 

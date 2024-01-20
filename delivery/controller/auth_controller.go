@@ -4,6 +4,7 @@ import (
 	"field_work/config"
 	"field_work/entity"
 	"field_work/entity/dto"
+	"field_work/helpers"
 	"field_work/shared/common"
 	"field_work/usecase"
 	"net/http"
@@ -19,12 +20,13 @@ type AuthController struct {
 }
 
 func (a *AuthController) loginHandler(ctx *gin.Context) {
+	endpoint := ctx.Request.RequestURI
 	var payload dto.AuthRequestDto
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	rsv, err := a.authUC.Login(payload)
+	rsv, err := a.authUC.Login(payload, endpoint)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -33,14 +35,14 @@ func (a *AuthController) loginHandler(ctx *gin.Context) {
 }
 
 func (a *AuthController) registerHandler(ctx *gin.Context) {
-	role := ctx.Request.RequestURI
+	endpoint := ctx.Request.RequestURI
 
 	var payload entity.Users
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	user, err := a.authUC.Register(payload, role)
+	user, err := a.authUC.Register(payload, endpoint)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -52,7 +54,7 @@ func (a *AuthController) registerHandler(ctx *gin.Context) {
 		return
 	}
 
-	common.SendCreatedResponse(ctx, userDTO, time.Now().Format("Monday 02, January 2006 15:04:05"), "Ok")
+	common.SendCreatedResponse(ctx, userDTO, time.Now().In(helpers.Location()).Format(time.RFC850), "Ok")
 }
 
 func (a *AuthController) Route() {

@@ -27,7 +27,6 @@ CREATE TABLE products(
 	material VARCHAR(50),
 	summary VARCHAR(250),
 	description TEXT,
-	id_image VARCHAR(50) NOT NULL,
 	created_at TIMESTAMPTZ(0) DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMPTZ(0) DEFAULT CURRENT_TIMESTAMP
 );
