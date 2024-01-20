@@ -94,11 +94,27 @@ func (c *productsController) getHandler(ctx *gin.Context) {
   common.SendSingleResponse(ctx, product, "Get product successfully")
 }
 
+func (c *productsController) deleteHandler(ctx *gin.Context) {
+  id := ctx.Param("id")
+  
+  if err := c.productsUseCase.DeleteProductByID(id); err != nil {
+    if errors.Is(err, sql.ErrNoRows) {
+      common.SendErrorResponse(ctx, http.StatusNotFound, fmt.Sprintf("Product with id '%s' not found", id))
+    } else {
+      common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    }
+    return
+  }
+  
+  common.SendDeletedResponse(ctx, "Delete product successfully")
+}
+
 func (c *productsController) Route() {
   admin := c.rg.Group(config.AdminGroup)
   admin.POST(config.Products, c.authMiddleware.RequireToken("Admin"), c.insertHandler)
   admin.GET(config.Products, c.authMiddleware.RequireToken("Admin"), c.listHandler)
   admin.GET(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.getHandler)
+  admin.DELETE(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.deleteHandler)
   
   customer := c.rg.Group(config.CustomerGroup)
   customer.GET(config.Products, c.authMiddleware.RequireToken("Customer"), c.listHandler)

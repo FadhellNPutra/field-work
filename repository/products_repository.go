@@ -16,6 +16,7 @@ type ProductsRepository interface {
   FindAll(page, size int) ([]entity.Products, model.Paging, error)
   FindByID(id string) (entity.Products, error)
   FindByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error)
+  DeleteByID(id string) error
 }
 
 type productsRepository struct {
@@ -147,6 +148,10 @@ func (r *productsRepository) FindByProductName(productName string, page, size in
   }
   
   return products, paging, nil
+}
+
+func (r *productsRepository) DeleteByID(id string) error {
+  return r.db.QueryRow(config.DeleteProductByID, id).Scan(&id)
 }
 
 func NewProductsRepository(db *sql.DB) ProductsRepository {

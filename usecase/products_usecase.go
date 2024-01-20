@@ -16,6 +16,7 @@ type ProductsUseCase interface {
   ListProducts(page, size int) ([]entity.Products, model.Paging, error)
   GetProductByID(id string) (entity.Products, error)
   GetProductsByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error)
+  DeleteProductByID(id string) error
 }
 
 type productsUseCase struct {
@@ -47,6 +48,10 @@ func (u *productsUseCase) GetProductByID(id string) (entity.Products, error) {
 
 func (u *productsUseCase) GetProductsByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error) {
   return u.productsRepository.FindByProductName(productName, page, size)
+}
+
+func (u *productsUseCase) DeleteProductByID(id string) error {
+  return u.productsRepository.DeleteByID(id)
 }
 
 func NewProductsUseCase(productsRepository repository.ProductsRepository) ProductsUseCase {
