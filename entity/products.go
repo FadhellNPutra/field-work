@@ -16,13 +16,15 @@ type Products struct {
 	UpdatedAt   string `json:"updatedAt,omitempty"`
 }
 
-func (p *Products) TimeFormat(timeField string) {
-  switch timeField {
-  case "CreatedAt":
-    createdAt, _ := time.Parse("2006-01-02T15:04:05+07:00", p.CreatedAt)
-    p.CreatedAt = createdAt.Format(time.RFC850)
-  case "UpdatedAt":
-    updatedAt, _ := time.Parse("2006-01-02T15:04:05+07:00", p.UpdatedAt)
-    p.UpdatedAt = updatedAt.Format(time.RFC850)
+func (p *Products) TimeFormat(fields ...string) {
+  for _, field := range fields {
+    switch field {
+    case "CreatedAt":
+      createdAt, _ := time.Parse("2006-01-02T15:04:05+07:00", p.CreatedAt)
+      p.CreatedAt = createdAt.Format(time.RFC850)
+    case "UpdatedAt":
+      updatedAt, _ := time.Parse("2006-01-02T15:04:05+07:00", p.UpdatedAt)
+      p.UpdatedAt = updatedAt.Format(time.RFC850)
+    }
   }
 }

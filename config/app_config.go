@@ -20,4 +20,5 @@ const (
 	
 	// Products
 	Products = "products"
+	ProductByID = "products/:id"
 )

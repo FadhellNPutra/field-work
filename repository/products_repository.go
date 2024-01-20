@@ -13,6 +13,7 @@ import (
 type ProductsRepository interface {
   Insert(payload entity.Products) (entity.Products, error)
   FindAll(page, size int) ([]entity.Products, model.Paging, error)
+  FindByID(id string) (entity.Products, error)
 }
 
 type productsRepository struct {
@@ -79,6 +80,26 @@ func (r *productsRepository) FindAll(page, size int) ([]entity.Products, model.P
   }
   
   return products, paging, nil
+}
+
+func (r *productsRepository) FindByID(id string) (entity.Products, error) {
+  var product entity.Products
+
+  if err :=r.db.QueryRow(config.SelectProductByID, id).Scan(
+    &product.ID,
+    &product.ProductName,
+    &product.Quantity,
+    &product.Price,
+    &product.Material,
+    &product.Description,
+    &product.CreatedAt,
+    &product.UpdatedAt,
+  ); err != nil {
+    log.Println("productsRepository: FindByID.Scan Err :", err)
+    return entity.Products{}, err
+  }
+  
+  return product, nil
 }
 
 func NewProductsRepository(db *sql.DB) ProductsRepository {

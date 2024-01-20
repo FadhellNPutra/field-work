@@ -1,12 +1,15 @@
 package controller
 
 import (
+  "database/sql"
+  "errors"
   "field_work/config"
   "field_work/delivery/middleware"
   "field_work/entity"
   "field_work/helpers"
   "field_work/shared/common"
   "field_work/usecase"
+  "fmt"
   "net/http"
   "strconv"
   "time"
@@ -55,13 +58,32 @@ func (c *productsController) listHandler(ctx *gin.Context) {
   common.SendPagedResponse(ctx, response, paging, "List Products")
 }
 
+func (c *productsController) getHandler(ctx *gin.Context) {
+  id := ctx.Param("id")
+  product, err := c.productsUseCase.GetProductByID(id)
+  if err != nil {
+    if errors.Is(err, sql.ErrNoRows) {
+      common.SendErrorResponse(ctx, http.StatusNotFound, fmt.Sprintf("Product with id '%s' not found", id))
+    } else {
+      common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    }
+    return
+  }
+  
+  product.TimeFormat("CreatedAt", "UpdatedAt")
+  
+  common.SendSingleResponse(ctx, product, "Get product successfully")
+}
+
 func (c *productsController) Route() {
   admin := c.rg.Group(config.AdminGroup)
   admin.POST(config.Products, c.authMiddleware.RequireToken("Admin"), c.insertHandler)
   admin.GET(config.Products, c.authMiddleware.RequireToken("Admin"), c.listHandler)
+  admin.GET(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.getHandler)
   
   customer := c.rg.Group(config.CustomerGroup)
   customer.GET(config.Products, c.authMiddleware.RequireToken("Customer"), c.listHandler)
+  customer.GET(config.ProductByID, c.authMiddleware.RequireToken("Customer"), c.getHandler)
 }
 
 func NewProductsController(productsUseCase usecase.ProductsUseCase, rg *gin.RouterGroup, authMiddleware middleware.AuthMiddleware) *productsController {

@@ -14,6 +14,7 @@ import (
 type ProductsUseCase interface {
   CreateNewProduct(payload entity.Products) (dto.ProductsDTO, error)
   ListProducts(page, size int) ([]entity.Products, model.Paging, error)
+  GetProductByID(id string) (entity.Products, error)
 }
 
 type productsUseCase struct {
@@ -37,6 +38,10 @@ func (u *productsUseCase) CreateNewProduct(payload entity.Products) (dto.Product
 
 func (u *productsUseCase) ListProducts(page, size int) ([]entity.Products, model.Paging, error) {
   return u.productsRepository.FindAll(page, size)
+}
+
+func (u *productsUseCase) GetProductByID(id string) (entity.Products, error) {
+  return u.productsRepository.FindByID(id)
 }
 
 func NewProductsUseCase(productsRepository repository.ProductsRepository) ProductsUseCase {
