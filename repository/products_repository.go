@@ -16,6 +16,7 @@ type ProductsRepository interface {
   FindAll(page, size int) ([]entity.Products, model.Paging, error)
   FindByID(id string) (entity.Products, error)
   FindByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error)
+  UpdateByID(payload entity.Products, id string) (entity.Products, error)
   DeleteByID(id string) error
 }
 
@@ -148,6 +149,23 @@ func (r *productsRepository) FindByProductName(productName string, page, size in
   }
   
   return products, paging, nil
+}
+
+func (r *productsRepository) UpdateByID(payload entity.Products, id string) (entity.Products, error) {
+  var product entity.Products
+  if err := r.db.QueryRow(config.UpdateProductByID, id, payload.ProductName, payload.Quantity, payload.Price, payload.Material, payload.Description).Scan(
+    &product.ID,
+    &product.ProductName,
+    &product.Quantity,
+    &product.Price,
+    &product.Material,
+    &product.Description,
+  ); err != nil {
+    log.Println("productsRepository: DeleteByID.QueryRow.Scan Err :", err)
+    return entity.Products{}, err
+  }
+  
+  return product, nil
 }
 
 func (r *productsRepository) DeleteByID(id string) error {

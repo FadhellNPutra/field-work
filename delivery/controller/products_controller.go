@@ -27,7 +27,7 @@ type productsController struct {
 func (c *productsController) insertHandler(ctx *gin.Context) {
   var payload entity.Products
   if err := ctx.ShouldBindJSON(&payload); err != nil {
-    common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
     return
   }
   
@@ -109,11 +109,29 @@ func (c *productsController) deleteHandler(ctx *gin.Context) {
   common.SendDeletedResponse(ctx, "Delete product successfully")
 }
 
+func (c *productsController) updateHandler(ctx *gin.Context) {
+  id := ctx.Param("id")
+  var payload entity.Products
+  if err := ctx.ShouldBindJSON(&payload); err != nil {
+    common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+    return
+  }
+  
+  product, err := c.productsUseCase.UpdateProductByID(payload, id)
+  if err != nil {
+    common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+    return
+  }
+  
+  common.SendUpdatedResponse(ctx, product, time.Now().In(helpers.Location()).Format(time.RFC850), "Update product successfully")
+}
+
 func (c *productsController) Route() {
   admin := c.rg.Group(config.AdminGroup)
   admin.POST(config.Products, c.authMiddleware.RequireToken("Admin"), c.insertHandler)
   admin.GET(config.Products, c.authMiddleware.RequireToken("Admin"), c.listHandler)
   admin.GET(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.getHandler)
+  admin.PUT(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.updateHandler)
   admin.DELETE(config.ProductByID, c.authMiddleware.RequireToken("Admin"), c.deleteHandler)
   
   customer := c.rg.Group(config.CustomerGroup)

@@ -1,7 +1,10 @@
 package usecase
 
 import (
+  "fmt"
   "log"
+  "reflect"
+  "strconv"
   
 	"field_work/entity"
 	"field_work/entity/dto"
@@ -16,6 +19,7 @@ type ProductsUseCase interface {
   ListProducts(page, size int) ([]entity.Products, model.Paging, error)
   GetProductByID(id string) (entity.Products, error)
   GetProductsByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error)
+  UpdateProductByID(payload entity.Products, id string) (entity.Products, error)
   DeleteProductByID(id string) error
 }
 
@@ -48,6 +52,47 @@ func (u *productsUseCase) GetProductByID(id string) (entity.Products, error) {
 
 func (u *productsUseCase) GetProductsByProductName(productName string, page, size int) ([]entity.Products, model.Paging, error) {
   return u.productsRepository.FindByProductName(productName, page, size)
+}
+
+func (u *productsUseCase) UpdateProductByID(payload entity.Products, id string) (entity.Products, error) {
+  product, err := u.productsRepository.FindByID(id)
+  if err != nil {
+    return entity.Products{}, err
+  }
+  
+  payloadMap := payload.ToMap()
+  productMap := product.ToMap()
+  
+  for key, val := range payloadMap {
+    if *val == "" || *val == "0" {
+      *val = *productMap[key]
+    }
+  }
+  
+  for key, val := range payloadMap {
+		field := reflect.ValueOf(&payload).Elem().FieldByName(key)
+
+		if field.Kind() == reflect.String {
+			fieldValue := *val
+			field.SetString(fieldValue)
+		}
+	}
+	
+	if err := copier.Copy(&product, &payload); err != nil {
+	  log.Println("productsUseCase: UpdateProductByID.Copy Err :", err)
+		return entity.Products{}, fmt.Errorf("failed to copy product struct: %v", err.Error())
+	}
+	
+	product.Quantity, _ = strconv.ParseInt(*payloadMap["Quantity"], 10, 64)
+	product.Price, _ = strconv.ParseInt(*payloadMap["Price"], 10, 64)
+
+	newProduct, err := u.productsRepository.UpdateByID(product, id)
+	if err != nil {
+	  log.Println("productsUseCase: UpdateProductByID.UpdateByID Err :", err)
+		return entity.Products{}, err
+	}
+
+	return newProduct, nil
 }
 
 func (u *productsUseCase) DeleteProductByID(id string) error {

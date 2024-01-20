@@ -1,15 +1,18 @@
 package entity
 
 import (
+  "fmt"
   _ "field_work/helpers"
+  "reflect"
+  "strconv"
   "time"
 )
 
 type Products struct {
 	ID          string `json:"id"`
 	ProductName string `json:"productName,omitempty"`
-	Quantity    int `json:"quantity,omitempty"`
-	Price       int    `json:"price,omitempty"`
+	Quantity    int64    `json:"quantity,omitempty"`
+	Price       int64    `json:"price,omitempty"`
 	Material    string `json:"material,omitempty"`
 	Description string `json:"description,omitempty"`
 	CreatedAt   string `json:"createdAt,omitempty"`
@@ -29,4 +32,30 @@ func (p *Products) TimeFormat(fields ...string) {
       }
     }
   }
+}
+
+func (p *Products) ToMap() map[string]*string {
+	structValue := reflect.ValueOf(*p)
+	structType := structValue.Type()
+
+	result := make(map[string]*string)
+
+	for i := 0; i < structValue.NumField(); i++ {
+		field := structValue.Field(i)
+		fieldName := structType.Field(i).Name
+		
+		switch field.Kind() {
+		case reflect.String:
+  		fieldValue := field.String()
+  		result[fieldName] = &fieldValue
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+  		fieldValue := field.Int()
+  		fieldValueStr := strconv.FormatInt(fieldValue, 10)
+  		result[fieldName] = &fieldValueStr
+		default:
+			fmt.Printf("unhandled kind %s\n", structValue.Kind())
+		}
+	}
+
+	return result
 }

@@ -15,5 +15,6 @@ const (
 	SelectAllProducts = "SELECT id, product_name, quantity, price, material, description, created_at FROM products ORDER BY created_at DESC LIMIT $1 OFFSET $2;"
 	SelectProductByID = "SELECT id, product_name, quantity, price, material, description, created_at, updated_at FROM products WHERE id = $1;"
 	SelectProductsByProductName = "SELECT id, product_name, quantity, price, material, description, created_at, updated_at FROM products WHERE product_name ILIKE $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3;"
+	UpdateProductByID = "UPDATE products SET product_name = $2, quantity = $3, price = $4, material = $5, description = $6, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, product_name, quantity, price, material, description;"
 	DeleteProductByID = "DELETE FROM products WHERE id = $1 RETURNING id;"
 )
