@@ -18,6 +18,7 @@ type Server struct {
 	usersUC    usecase.UsersUseCase
 	authUC     usecase.AuthUseCase
 	productsUC     usecase.ProductsUseCase
+	productImagesUC     usecase.ProductImagesUseCase
 	jwtService service.JwtService
 	engine     *gin.Engine
 	host       string
@@ -30,6 +31,7 @@ func (s *Server) initRoute() {
 	controller.NewAuthController(s.authUC, rg).Route()
 	controller.NewUsersController(s.usersUC, rg, authMiddleware).Route()
 	controller.NewProductsController(s.productsUC, rg, authMiddleware).Route()
+	controller.NewProductImagesController(s.productImagesUC, rg, authMiddleware).Route()
 }
 
 func (s *Server) Run() {
@@ -53,11 +55,13 @@ func NewServer() *Server {
 	// Repo
 	usersRepo := repository.NewUsersRepository(db)
 	productsRepo := repository.NewProductsRepository(db)
+	productImagesRepo := repository.NewProductImagesRepository(db)
   
 	// Usecase
 	usersUC := usecase.NewUsersUseCase(usersRepo)
 	authUC := usecase.NewAuthUseCase(usersUC, jwtService)
 	productsUC := usecase.NewProductsUseCase(productsRepo)
+	productImagesUC := usecase.NewProductImagesUseCase(productImagesRepo)
 
 	engine := gin.Default()
 	host := fmt.Sprintf(":%s", cfg.ApiPort)
@@ -66,6 +70,7 @@ func NewServer() *Server {
 		usersUC:    usersUC,
 		authUC:     authUC,
 		productsUC:     productsUC,
+		productImagesUC:     productImagesUC,
 		jwtService: jwtService,
 		engine:     engine,
 		host:       host,

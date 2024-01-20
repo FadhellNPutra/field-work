@@ -35,6 +35,7 @@ CREATE TABLE product_images (
 	id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
 	product_id uuid NOT NULL,
 	file_name VARCHAR(100),
+	is_primary BOOLEAN DEFAULT false,
 	FOREIGN KEY(product_id) REFERENCES products(id)
 );
 
@@ -46,7 +47,7 @@ CREATE TABLE transactions(
 	product_id uuid NOT NULL,
 	total_price BIGINT NOT NULL,
 	total_quantity BIGINT NOT NULL,
-	STATUS status_type NOT NULL,
+	status status_type NOT NULL,
 	size size_type NOT NULL,
 	color VARCHAR(50) NOT NULL,
 	customer_message TEXT,
