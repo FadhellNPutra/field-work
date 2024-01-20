@@ -36,7 +36,7 @@ func (a *authUseCase) Login(payload dto.AuthRequestDto, endpoint string) (dto.Au
 	user, err := a.userUC.FindUsersForLogin(payload.User, payload.Password)
 	if err != nil {
 	  if errors.Is(err, sql.ErrNoRows) {
-		  return dto.AuthResponseDto{}, fmt.Errorf("User with username '%s' not found", payload.User)
+		  return dto.AuthResponseDto{}, fmt.Errorf("Wrong username or password")
 	  } else {
 		  return dto.AuthResponseDto{}, err
 	  }

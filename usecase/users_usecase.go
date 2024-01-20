@@ -55,9 +55,9 @@ func (u *usersUseCase) FindUsersByUsername(username string) (entity.Users, error
 }
 
 func (u *usersUseCase) FindUsersForLogin(username string, password string) (entity.Users, error) {
-	if username == "" || password == "" {
-		return entity.Users{}, errors.New("gagal masuk")
-	}
+// 	if username == "" || password == "" {
+// 		return entity.Users{}, errors.New("gagal masuk")
+// 	}
 	return u.repo.GetUsersByUsernameForLogin(username, password)
 }
 
@@ -116,6 +116,7 @@ func (u *usersUseCase) UpdateUsers(payload dto.UpdateUserDTO, id string) (entity
 	if err != nil {
 		return entity.Users{}, fmt.Errorf("failed update data User: %v", err.Error())
 	}
+
 	return newUser, nil
 }
 

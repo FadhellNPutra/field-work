@@ -12,4 +12,5 @@ const (
 	
 	// Products Query
 	InsertProduct = "INSERT INTO products(product_name, quantity, price, material, description) VALUES($1, $2, $3, $4, $5) RETURNING id, product_name, quantity, price, material, description;"
+	SelectAllProducts = "SELECT id, product_name, quantity, price, material, description, created_at FROM products ORDER BY created_at DESC LIMIT $1 OFFSET $2;"
 )

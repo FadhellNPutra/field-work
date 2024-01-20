@@ -11,6 +11,7 @@ type UserDTO struct {
 type UpdateUserDTO struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
+	Password string `json:"password"`
 	Address  string `json:"address"`
 	Role     string `json:"role"`
 }

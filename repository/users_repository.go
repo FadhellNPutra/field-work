@@ -112,7 +112,7 @@ func (u *usersRepository) GetUsersByUsernameForLogin(username string, password s
 
 func (u *usersRepository) List(page int, size int) ([]entity.Users, model.Paging, error) {
 	var users []entity.Users
-	offset := (page - 1) * 5
+	offset := (page - 1) * size
 	rows, err := u.db.Query(config.SelectAllUser, size, offset)
 	if err != nil {
 		log.Println("usersRepository.Query: ", err.Error())
@@ -168,10 +168,8 @@ func (u *usersRepository) UpdateUser(payload entity.Users) (entity.Users, error)
 	users.ID = payload.ID
 	users.Name = payload.Name
 	users.Username = payload.Username
-	users.Password = payload.Password
 	users.Address = payload.Address
 	users.Role = payload.Role
-	users.UpdatedAt = payload.UpdatedAt
 
 	return users, nil
 

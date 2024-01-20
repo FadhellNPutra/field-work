@@ -6,12 +6,14 @@ import (
 	"field_work/entity"
 	"field_work/entity/dto"
 	"field_work/repository"
+	"field_work/shared/model"
 	
 	"github.com/jinzhu/copier"
 )
 
 type ProductsUseCase interface {
   CreateNewProduct(payload entity.Products) (dto.ProductsDTO, error)
+  ListProducts(page, size int) ([]entity.Products, model.Paging, error)
 }
 
 type productsUseCase struct {
@@ -31,6 +33,10 @@ func (u *productsUseCase) CreateNewProduct(payload entity.Products) (dto.Product
   }
   
   return productDTO, nil
+}
+
+func (u *productsUseCase) ListProducts(page, size int) ([]entity.Products, model.Paging, error) {
+  return u.productsRepository.FindAll(page, size)
 }
 
 func NewProductsUseCase(productsRepository repository.ProductsRepository) ProductsUseCase {
